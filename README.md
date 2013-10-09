@@ -64,7 +64,7 @@ Perhaps the API needs a complete object (described using `"required"` in the sch
 ### Supported validations
 Note! Case is important!
 
-Object:
+#### Object:
  - required
  - properties
  - patternProperties
@@ -73,13 +73,13 @@ Object:
  - minProperties
  - maxProperties
 
-Array:
+#### Array:
  - items
  - minItems
  - maxItems
  - uniqueItems
 
-String:
+#### String:
  - minLength
  - maxLength
  - pattern
@@ -95,12 +95,12 @@ String:
     - utc-millisec
     - regex
 
-Numeric:
+#### Numeric:
  - multipleOf
  - minimum
  - maximum
 
-Additions:
+#### Additions:
  - allOf
  - anyOf
  - oneOf
