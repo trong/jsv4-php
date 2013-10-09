@@ -61,6 +61,51 @@ Perhaps the API needs a complete object (described using `"required"` in the sch
 
 `Jsv4::coerce()` will attempt to insert appropriate values for the missing properties, using a default (if it is defined in a nearby `"properties"` entry) or by creating a value if it knows the type.
 
+### Supported validations
+Note! Case is important!
+
+Object:
+ - required
+ - properties
+ - patternProperties
+ - additionalProperties
+ - dependencies
+ - minProperties
+ - maxProperties
+
+Array:
+ - items
+ - minItems
+ - maxItems
+ - uniqueItems
+
+String:
+ - minLength
+ - maxLength
+ - pattern
+ - format
+    - uri
+    - email
+    - ip-address
+    - ipv4
+    - ipv6
+    - date
+    - tiime
+    - date-time
+    - utc-millisec
+    - regex
+
+Numeric:
+ - multipleOf
+ - minimum
+ - maximum
+
+Additions:
+ - allOf
+ - anyOf
+ - oneOf
+ - not
+
 ## The `SchemaStore` class
 
 This class represents a collection of schemas.  You include it from `schema-store.php`, and use it like this:
