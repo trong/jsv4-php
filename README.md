@@ -99,7 +99,11 @@ Note! Case is important!
  - multipleOf
  - minimum
  - maximum
+ - exclusiveMinimum
+ - exclusiveMaximum
 
+#### Enum - supported
+ 
 #### Additions:
  - allOf
  - anyOf
