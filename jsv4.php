@@ -68,7 +68,7 @@ class Jsv4 {
 				if (!isset($b->$key)) {
 					return FALSE;
 				}
-				if (!recursiveEqual($value, $b->$key)) {
+				if (!self::recursiveEqual($value, $b->$key)) {
 					return FALSE;
 				}
 			}
@@ -87,7 +87,7 @@ class Jsv4 {
 				if (!isset($b[$key])) {
 					return FALSE;
 				}
-				if (!recursiveEqual($value, $b[$key])) {
+				if (!self::recursiveEqual($value, $b[$key])) {
 					return FALSE;
 				}
 			}
