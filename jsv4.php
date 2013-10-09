@@ -403,19 +403,71 @@ class Jsv4 {
 				$this->fail(JSV4_STRING_PATTERN, "", "/pattern", "String does not match pattern: $pattern");
 			}
 		}
-                if (isset($this->schema->format)) {
-                        $format = $this->schema->format;
-                        switch ($format) {
-                                case 'uri':
-                                        if (null === filter_var($element, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE)) {
-                                              $this->fail(JSV4_STRING_FORMAT, "", "/format", "Invalid URL format");
-                                        }
-                                        break;
-                                default:
-                                        $this->fail(JSV4_STRING_FORMAT, "", "/format", "Unknown format: $format");
-                        }
-                }
-	}
+        if (isset($this->schema->format)) {
+            $format = $this->schema->format;
+            switch ($format) {
+                case 'uri':
+                    if (null === filter_var($this->data, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE)) {
+                        $this->fail(JSV4_STRING_FORMAT, "", "/format", "Invalid URL format");
+                    }
+                    break;
+                case 'email':
+                    if (null === filter_var($this->data, FILTER_VALIDATE_EMAIL, FILTER_NULL_ON_FAILURE)) {
+                        $this->fail(JSV4_STRING_FORMAT, "", "/format", "Invalid email");
+                    }
+                    break;
+                case 'ip-address':
+                case 'ipv4':
+                    if (null === filter_var($this->data, FILTER_VALIDATE_IP, FILTER_NULL_ON_FAILURE | FILTER_FLAG_IPV4)) {
+                        $this->fail(JSV4_STRING_FORMAT, "", "/format", "Invalid IP address");
+                    }
+                    break;
+                case 'ipv6':
+                    if (null === filter_var($this->data, FILTER_VALIDATE_IP, FILTER_NULL_ON_FAILURE | FILTER_FLAG_IPV6)) {
+                        $this->fail(JSV4_STRING_FORMAT, "", "/format", "Invalid IP address");
+                    }
+                    break;
+                case 'date':
+                    if (!$date = $this->validateDateTime($this->data, 'Y-m-d')) {
+                        $this->fail(JSV4_STRING_FORMAT, "", "/format", sprintf('Invalid date %s, expected format YYYY-MM-DD', json_encode($this->data)));
+                    }
+                    break;
+                case 'time':
+                    if (!$this->validateDateTime($this->data, 'H:i:s')) {
+                        $this->fail(JSV4_STRING_FORMAT, "", "/format", sprintf('Invalid time %s, expected format hh:mm:ss', json_encode($this->data)));
+                    }
+                    break;
+                case 'date-time':
+                    if (!$this->validateDateTime($this->data, 'Y-m-d\TH:i:s\Z') &&
+                        !$this->validateDateTime($this->data, 'Y-m-d\TH:i:s.u\Z') &&
+                        !$this->validateDateTime($this->data, 'Y-m-d\TH:i:sP') &&
+                        !$this->validateDateTime($this->data, 'Y-m-d\TH:i:sO') &&
+                        !$this->validateDateTime($this->data, 'Y-m-d H:i:s')
+                    ) {
+                        $this->fail(JSV4_STRING_FORMAT, "", "/format", sprintf('Invalid date-time %s, expected format YYYY-MM-DDThh:mm:ssZ, YYYY-MM-DDThh:mm:ss+hh:mm or YYYY-MM-DD hh:mm:ss', json_encode($this->data)));
+                    }
+                    break;
+                case 'utc-millisec':
+                    if (!$this->validateDateTime($this->data, 'U')) {
+                        $this->fail(JSV4_STRING_FORMAT, "", "/format", sprintf('Invalid time %s, expected integer of milliseconds since Epoch', json_encode($this->data)));
+                    }
+                    break;
+                case 'regex':
+                    if (!$this->validateRegex($this->data)) {
+                        $this->fail(JSV4_STRING_FORMAT, "", "/format", 'Invalid regex format ' . $this->data);
+                    }
+                    break;
+                case 'host-name':
+                case 'hostname':
+                    if (!$this->validateHostname($this->data)) {
+                        $this->fail(JSV4_STRING_FORMAT, "", "/format", "Invalid hostname");
+                    }
+                    break;
+                default:
+                    $this->fail(JSV4_STRING_FORMAT, "", "/format", "Unknown format: $format");
+            }
+        }
+    }
 	
 	private function checkNumber() {
 		if (is_string($this->data) || !is_numeric($this->data)) {
@@ -539,6 +591,27 @@ class Jsv4 {
 		}
 		return FALSE;
 	}
+
+    private function validateDateTime($datetime, $format)
+    {
+        $dt = \DateTime::createFromFormat($format, $datetime);
+
+        if (!$dt) {
+            return false;
+        }
+
+        return $datetime === $dt->format($format);
+    }
+
+    private function validateRegex($regex)
+    {
+        return false !== @preg_match('/' . $regex . '/', '');
+    }
+
+    private function validateHostname($host)
+    {
+        return preg_match('/^[_a-z]+\.([_a-z]+\.?)+$/i', $host);
+    }
 }
 
 class Jsv4Error extends Exception {
