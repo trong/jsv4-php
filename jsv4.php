@@ -16,6 +16,7 @@ define('JSV4_NUMBER_MAXIMUM_EXCLUSIVE', 104);
 define('JSV4_STRING_LENGTH_SHORT', 200);
 define('JSV4_STRING_LENGTH_LONG', 201);
 define('JSV4_STRING_PATTERN', 202);
+define('JSV4_STRING_FORMAT', 203);
 // Object errors
 define('JSV4_OBJECT_PROPERTIES_MINIMUM', 300);
 define('JSV4_OBJECT_PROPERTIES_MAXIMUM', 301);
@@ -402,6 +403,18 @@ class Jsv4 {
 				$this->fail(JSV4_STRING_PATTERN, "", "/pattern", "String does not match pattern: $pattern");
 			}
 		}
+                if (isset($this->schema->format)) {
+                        $format = $this->schema->format;
+                        switch ($format) {
+                                case 'uri':
+                                        if (null === filter_var($element, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE)) {
+                                              $this->fail(JSV4_STRING_FORMAT, "", "/format", "Invalid URL format");
+                                        }
+                                        break;
+                                default:
+                                        $this->fail(JSV4_STRING_FORMAT, "", "/format", "Unknown format: $format");
+                        }
+                }
 	}
 	
 	private function checkNumber() {
