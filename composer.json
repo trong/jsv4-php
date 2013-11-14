@@ -1,0 +1,12 @@
+{
+    "name": "trong/jsv4-php",
+    "description": "jsv4-php is a data validator, using version 4 JSON Schemas.",
+    "version": "1.0",
+    "type": "library",
+    "keywords": "json,json-schema,tests",
+    "homepage": "https://github.com/trong/jsv4-php",
+    "license": "MIT",
+    "autoload": {
+        "classmap": ["jsv4.php"]
+    }
+}
