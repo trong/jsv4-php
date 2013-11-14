@@ -6,6 +6,22 @@
 
 Just include `jsv4.php` from your code, and use the static methods on the `Jsv4` class it defines.
 
+Installing via Composer:
+
+```json
+{
+    "require-dev": {
+        "trong/jsv4-php" : "dev-master"
+    },
+    "repositories" : [
+        {
+            "type" : "git",
+            "url"  : "https://github.com/trong/jsv4-php.git"
+        }
+    ]
+}
+```
+
 Usage:
 
 ### `Jsv4::validate($data, $schema)`
